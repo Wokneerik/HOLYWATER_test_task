@@ -1,8 +1,8 @@
 import React from 'react';
-import MainScreen from './src/screens/MainScreen';
+import Navigation from './src/navigation/Navigation';
 
 function App(): React.JSX.Element {
-  return <MainScreen />;
+  return <Navigation />;
 }
 
 export default App;
