@@ -2,7 +2,7 @@ import {StyleSheet} from 'react-native';
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop: 30,
+    marginTop: 25,
   },
   genreContainer: {
     marginBottom: 10,

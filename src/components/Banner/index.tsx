@@ -1,16 +1,19 @@
 import remoteConfig from '@react-native-firebase/remote-config';
 import React, {FC, useEffect, useRef, useState} from 'react';
-import {Dimensions, FlatList, View} from 'react-native';
+import {
+  ActivityIndicator,
+  Dimensions,
+  FlatList,
+  Text,
+  View,
+} from 'react-native';
 import {Slide} from '../../types';
 import BannerItem from '../BannerItem';
 import RenderIndicator from '../RenderIndicator';
 
 const {width} = Dimensions.get('window');
 const SLIDE_WIDTH = width;
-const ITEM_WIDTH = 350;
-const ITEM_MARGIN = 10;
-const TOTAL_ITEM_WIDTH = ITEM_WIDTH + ITEM_MARGIN * 2;
-const SCREEN_WIDTH = Dimensions.get('window').width;
+
 const AUTO_SLIDE_INTERVAL = 3000;
 
 const Banner: FC = () => {
@@ -68,8 +71,10 @@ const Banner: FC = () => {
   };
 
   return (
-    <View>
-      <View style={{position: 'relative'}}>
+    <View style={{position: 'relative'}}>
+      {loading ? (
+        <ActivityIndicator size="large" />
+      ) : slides && slides.length > 0 ? (
         <FlatList
           ref={flatListRef}
           data={slides}
@@ -77,18 +82,26 @@ const Banner: FC = () => {
           renderItem={({item}) => <BannerItem item={item} />}
           horizontal
           pagingEnabled
-          snapToInterval={TOTAL_ITEM_WIDTH}
+          snapToInterval={SLIDE_WIDTH}
           snapToAlignment="center"
           decelerationRate="fast"
           showsHorizontalScrollIndicator={false}
-          contentContainerStyle={{
-            paddingHorizontal: (SCREEN_WIDTH - ITEM_WIDTH) / 2,
-          }}
           onMomentumScrollEnd={handleScroll}
+          contentContainerStyle={{
+            // This ensures consistent width across all items
+            alignItems: 'center',
+          }}
+          getItemLayout={(_, index) => ({
+            // This helps with precise scrolling
+            length: SLIDE_WIDTH,
+            offset: SLIDE_WIDTH * index,
+            index,
+          })}
         />
-
-        <RenderIndicator slides={slides} currentIndex={currentIndex} />
-      </View>
+      ) : (
+        <Text style={{padding: 20, color: 'white'}}>No slides available</Text>
+      )}
+      <RenderIndicator slides={slides} currentIndex={currentIndex} />
     </View>
   );
 };

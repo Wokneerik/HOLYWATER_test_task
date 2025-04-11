@@ -1,17 +1,14 @@
-import {StyleSheet} from 'react-native';
+import {Dimensions, StyleSheet} from 'react-native';
+
+const {width} = Dimensions.get('window');
 
 const styles = StyleSheet.create({
-  bannerContainer: {
-    width: 350,
-    marginHorizontal: 10,
-    borderRadius: 10,
-    overflow: 'hidden',
-  },
   bannerImg: {
-    width: '100%',
-    height: 200,
+    width: width,
+    height: 160,
     borderRadius: 10,
     resizeMode: 'cover',
+    paddingRight: 30,
   },
 });
 

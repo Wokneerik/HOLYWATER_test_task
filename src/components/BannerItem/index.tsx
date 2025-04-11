@@ -15,7 +15,7 @@ const BannerItem = ({item}: {item: Slide}) => {
   };
 
   return (
-    <TouchableOpacity onPress={onBannerPress} style={styles.bannerContainer}>
+    <TouchableOpacity onPress={onBannerPress}>
       <Image source={{uri: item.cover}} style={styles.bannerImg} />
     </TouchableOpacity>
   );
