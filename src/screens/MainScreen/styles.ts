@@ -4,6 +4,10 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: '#101010',
     flex: 1,
+
+    paddingVertical: 15,
+    paddingHorizontal: 10,
+    position: 'relative',
   },
   label: {
     fontSize: 20,

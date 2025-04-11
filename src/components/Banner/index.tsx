@@ -4,7 +4,6 @@ import {Dimensions, FlatList, View} from 'react-native';
 import {Slide} from '../../types';
 import BannerItem from '../BannerItem';
 import RenderIndicator from '../RenderIndicator';
-import styles from './styles';
 
 const {width} = Dimensions.get('window');
 const SLIDE_WIDTH = width;
@@ -70,7 +69,7 @@ const Banner: FC = () => {
 
   return (
     <View>
-      <View style={styles.bannerContainer}>
+      <View style={{position: 'relative'}}>
         <FlatList
           ref={flatListRef}
           data={slides}
