@@ -5,7 +5,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#101010',
     flex: 1,
   },
-  header: {},
+
+  bannerContainer: {
+    paddingVertical: 15,
+    paddingHorizontal: 10,
+    position: 'relative',
+  },
   label: {
     fontSize: 20,
     fontWeight: 700,
