@@ -1,5 +1,4 @@
 import remoteConfig from '@react-native-firebase/remote-config';
-import {useNavigation} from '@react-navigation/native';
 import React, {FC, useEffect, useRef, useState} from 'react';
 import {
   ActivityIndicator,
@@ -11,17 +10,12 @@ import {
 import {SafeAreaView} from 'react-native-safe-area-context';
 import BannerItem from '../../components/BannerItem';
 import RenderIndicator from '../../components/RenderIndicator';
+import {Slide} from '../../types';
 import styles from './styles';
-
-interface Slide {
-  id: number;
-  book_id: number;
-  cover: string;
-}
 
 const {width} = Dimensions.get('window');
 const SLIDE_WIDTH = width;
-const ITEM_WIDTH = 300;
+const ITEM_WIDTH = 350;
 const ITEM_MARGIN = 10;
 const TOTAL_ITEM_WIDTH = ITEM_WIDTH + ITEM_MARGIN * 2;
 const SCREEN_WIDTH = Dimensions.get('window').width;
@@ -32,7 +26,6 @@ const MainScreen: FC = () => {
   const [loading, setLoading] = useState(true);
   const flatListRef = useRef<FlatList<Slide>>(null);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
-  const navigation = useNavigation();
 
   useEffect(() => {
     const fetchBannerSlides = async () => {
@@ -81,28 +74,6 @@ const MainScreen: FC = () => {
     setCurrentIndex(index);
   };
 
-  const renderIndicator = () => (
-    <View
-      style={{
-        flexDirection: 'row',
-        justifyContent: 'center',
-        bottom: 20,
-      }}>
-      {slides.map((_, index) => (
-        <View
-          key={index}
-          style={{
-            width: 8,
-            height: 8,
-            borderRadius: 4,
-            marginHorizontal: 4,
-            backgroundColor: index === currentIndex ? '#D0006E' : '#C1C2CA',
-          }}
-        />
-      ))}
-    </View>
-  );
-
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.label}>Library</Text>
@@ -116,7 +87,7 @@ const MainScreen: FC = () => {
               ref={flatListRef}
               data={slides}
               keyExtractor={item => item.id.toString()}
-              renderItem={BannerItem}
+              renderItem={({item}) => <BannerItem item={item} />}
               horizontal
               pagingEnabled
               snapToInterval={TOTAL_ITEM_WIDTH}
