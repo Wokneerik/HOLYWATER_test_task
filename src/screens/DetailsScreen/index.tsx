@@ -1,11 +1,18 @@
 import React, {FC} from 'react';
-import {Text, View} from 'react-native';
+import {ImageBackground} from 'react-native';
+import {SafeAreaView} from 'react-native-safe-area-context';
+import BackButton from '../../components/BackButton';
+import styles from './styles';
 
 const DetailsScreen: FC = () => {
   return (
-    <View>
-      <Text>RETAILS</Text>
-    </View>
+    <ImageBackground
+      source={require('../../assets/Group669.png')}
+      style={styles.backgroundImage}>
+      <SafeAreaView style={styles.container}>
+        <BackButton />
+      </SafeAreaView>
+    </ImageBackground>
   );
 };
 

@@ -3,11 +3,12 @@ import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import React, {FC, useEffect} from 'react';
 import {Image, ImageBackground, Text, View} from 'react-native';
 import Loader from '../../components/Loader';
-import {RootParamList} from '../../navigation/types';
+import {RootStackParamList} from '../../navigation/types';
 import styles from './styles';
 
 const SplashScreen: FC = () => {
-  const navigation = useNavigation<NativeStackNavigationProp<RootParamList>>();
+  const navigation =
+    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
   useEffect(() => {
     const timer = setTimeout(() => {
