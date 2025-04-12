@@ -1,6 +1,4 @@
-import {Dimensions, StyleSheet} from 'react-native';
-
-const {width} = Dimensions.get('window');
+import {StyleSheet} from 'react-native';
 
 const styles = StyleSheet.create({
   container: {
@@ -66,6 +64,56 @@ const styles = StyleSheet.create({
     padding: 20,
     textAlign: 'center',
     color: 'gray',
+  },
+  recommendationBlock: {
+    marginBottom: 20,
+  },
+  loadingRecommendationsText: {
+    color: 'gray',
+    marginTop: 10,
+  },
+  errorRecommendationsText: {
+    color: 'red',
+    marginTop: 10,
+  },
+  noRecommendationsText: {
+    color: 'gray',
+    marginTop: 10,
+  },
+  recommendedBooksRow: {
+    paddingVertical: 10,
+  },
+  recommendedBookItem: {
+    marginRight: 15,
+    width: 120,
+  },
+  recommendedBookCover: {
+    width: 120,
+    height: 150,
+    borderRadius: 16,
+    marginBottom: 5,
+  },
+  recommendedBookTitle: {
+    fontSize: 16,
+    fontWeight: 400,
+    letterSpacing: -0.41,
+    color: '#393637',
+    textAlign: 'center',
+  },
+  readNowButton: {
+    width: 278,
+    height: 48,
+    backgroundColor: '#DD48A1',
+    borderRadius: 30,
+    alignItems: 'center',
+    justifyContent: 'center',
+    alignSelf: 'center',
+    marginTop: 20,
+  },
+  readNowText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });
 
