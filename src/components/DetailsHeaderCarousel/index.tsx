@@ -75,7 +75,7 @@ const DetailsHeaderCarousel: FC<DetailsHeaderCarouselProps> = ({
     };
 
     fetchCarouselBooks();
-  }, [initialBookId, scrollX]);
+  }, []);
 
   const handleScroll = (event: any) => {
     if (!isInitialScrollComplete) return;
