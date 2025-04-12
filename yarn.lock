@@ -1001,9 +1001,9 @@
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
 "@eslint-community/eslint-utils@^4.2.0", "@eslint-community/eslint-utils@^4.4.0":
-  version "4.5.1"
-  resolved "https://registry.yarnpkg.com/@eslint-community/eslint-utils/-/eslint-utils-4.5.1.tgz#b0fc7e06d0c94f801537fd4237edc2706d3b8e4c"
-  integrity sha512-soEIOALTfTK6EjmKMMoLugwaP0rzkad90iIWd1hMO9ARkSAyjfMfkRRhLvD5qH7vvM0Cg72pieUfR6yh6XxC4w==
+  version "4.6.0"
+  resolved "https://registry.yarnpkg.com/@eslint-community/eslint-utils/-/eslint-utils-4.6.0.tgz#bfe67b3d334a8579a35e48fe240dc0638d1bcd91"
+  integrity sha512-WhCn7Z7TauhBtmzhvKpoQs0Wwb/kBcy4CwpuI0/eEIr2Lx2auxmulAzLr91wVZJaz47iUZdkXOK7WlAfxGKCnA==
   dependencies:
     eslint-visitor-keys "^3.4.3"
 
@@ -2325,9 +2325,9 @@
   integrity sha512-5+fP8P8MFNC+AyZCDxrB2pkZFPGzqQWUzpSeuuVLvm8VMcorNYavBqoFcxK8bQz4Qsbn4oUEEem4wDLfcysGHA==
 
 "@types/node@*", "@types/node@>=12.12.47", "@types/node@>=13.7.0":
-  version "22.14.0"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-22.14.0.tgz#d3bfa3936fef0dbacd79ea3eb17d521c628bb47e"
-  integrity sha512-Kmpl+z84ILoG+3T/zQFyAJsU6EPTmOCj8/2+83fSN6djd6I4o7uOuGIH6vq3PrjY5BGitSbFuMN18j3iknubbA==
+  version "22.14.1"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-22.14.1.tgz#53b54585cec81c21eee3697521e31312d6ca1e6f"
+  integrity sha512-u0HuPQwe/dHrItgHHpmw3N2fYCR6x4ivMNbPHRkBVP4CvN+kiRrKHWk3i8tXiO/joPwXLMYvF9TTF0eqgHIuOw==
   dependencies:
     undici-types "~6.21.0"
 
@@ -2339,9 +2339,9 @@
     "@types/react" "*"
 
 "@types/react@*", "@types/react@^19.0.0":
-  version "19.1.0"
-  resolved "https://registry.yarnpkg.com/@types/react/-/react-19.1.0.tgz#73c43ad9bc43496ca8184332b111e2aef63fc9da"
-  integrity sha512-UaicktuQI+9UKyA4njtDOGBD/67t8YEBt2xdfqu8+gP9hqPUPsiXlNPcpS2gVdjmis5GKPG3fCxbQLVgxsQZ8w==
+  version "19.1.1"
+  resolved "https://registry.yarnpkg.com/@types/react/-/react-19.1.1.tgz#f7f2bb4a0a8d22b9ee4b8f6e27f0c78d76eb7f9b"
+  integrity sha512-ePapxDL7qrgqSF67s0h9m412d9DbXyC1n59O2st+9rjuuamWsZuD2w55rqY12CbzsZ7uVXb5Nw0gEp9Z8MMutQ==
   dependencies:
     csstype "^3.0.2"
 

@@ -1,8 +1,7 @@
 import {StyleSheet} from 'react-native';
 
 const styles = StyleSheet.create({
-  wrapper: {
-    width: 30,
+  container: {
     paddingLeft: 16,
   },
 });

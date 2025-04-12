@@ -13,7 +13,7 @@ const DetailsScreen: FC<DetailsScreenProps> = ({route}) => {
     <ImageBackground
       source={require('../../assets/Group669.png')}
       style={styles.backgroundImage}>
-      <SafeAreaView style={styles.container}>
+      <SafeAreaView>
         <BackButton />
         <DetailsHeaderCarousel initialBookId={bookId} />
       </SafeAreaView>
