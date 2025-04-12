@@ -1,7 +1,8 @@
 import remoteConfig from '@react-native-firebase/remote-config';
 import React, {FC, useEffect, useState} from 'react';
-import {FlatList, Image, ScrollView, Text, View} from 'react-native';
+import {FlatList, ScrollView, Text, View} from 'react-native';
 import {Book} from '../../types';
+import BookItem from '../BookItem';
 import styles from './styles';
 
 interface GenreGroup {
@@ -65,15 +66,7 @@ const HomeCategory: FC = () => {
           <FlatList
             data={genreGroup.books}
             keyExtractor={book => book.id.toString()}
-            renderItem={({item}) => (
-              <View style={styles.bookItemContainer}>
-                <Image
-                  source={{uri: item.cover_url}}
-                  style={styles.bookCover}
-                />
-                <Text style={styles.bookName}>{item.name}</Text>
-              </View>
-            )}
+            renderItem={({item}) => <BookItem book={item} />}
             horizontal
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={styles.booksRow}

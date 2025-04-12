@@ -5,16 +5,16 @@ const styles = StyleSheet.create({
     marginTop: 25,
   },
   genreContainer: {
-    marginBottom: 10,
+    marginBottom: 20,
   },
   genreTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
+    fontSize: 20,
+    fontWeight: 700,
     color: 'white',
     marginBottom: 10,
   },
   booksRow: {
-    paddingVertical: 10,
+    paddingVertical: 5,
   },
   bookItemContainer: {
     marginRight: 15,
@@ -27,9 +27,11 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   bookName: {
-    fontSize: 14,
-    color: 'white',
+    fontSize: 16,
+    fontWeight: 400,
+    color: '#FFFFFFB2',
     textAlign: 'left',
+    letterSpacing: -0.41,
   },
 });
 
