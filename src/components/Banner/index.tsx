@@ -21,11 +21,12 @@ const AUTO_SLIDE_INTERVAL = 3000;
 const Banner: FC = () => {
   const [originalSlides, setOriginalSlides] = useState<Slide[]>([]);
   const [displaySlides, setDisplaySlides] = useState<Slide[]>([]);
-  const [currentIndex, setCurrentIndex] = useState<number>(0); // Start at 0 (first cloned item)
+  const [currentIndex, setCurrentIndex] = useState<number>(1);
   const [loading, setLoading] = useState(true);
   const flatListRef = useRef<FlatList<Slide>>(null);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const scrolling = useRef(false);
+  const isInitialRender = useRef(true);
 
   useEffect(() => {
     const fetchBannerSlides = async () => {
@@ -47,12 +48,16 @@ const Banner: FC = () => {
           setOriginalSlides(slides);
 
           if (slides.length > 0) {
-            const modifiedSlides = [
-              slides[slides.length - 1],
-              ...slides,
-              slides[0],
-            ];
-            setDisplaySlides(modifiedSlides);
+            if (slides.length === 1) {
+              setDisplaySlides(slides);
+            } else {
+              const modifiedSlides = [
+                slides[slides.length - 1],
+                ...slides,
+                slides[0],
+              ];
+              setDisplaySlides(modifiedSlides);
+            }
           }
         }
       } catch (error) {
@@ -66,22 +71,38 @@ const Banner: FC = () => {
   }, []);
 
   useEffect(() => {
-    if (displaySlides.length > 0 && flatListRef.current) {
-      flatListRef.current.scrollToIndex({
-        index: 0,
-        animated: false,
-      });
-      setCurrentIndex(0);
+    if (
+      displaySlides.length > 0 &&
+      flatListRef.current &&
+      isInitialRender.current
+    ) {
+      if (originalSlides.length > 1) {
+        flatListRef.current.scrollToIndex({
+          index: 0,
+          animated: false,
+        });
+        setCurrentIndex(1);
+      }
+      isInitialRender.current = false;
     }
-  }, [displaySlides]);
+  }, [displaySlides, originalSlides.length]);
 
   useEffect(() => {
     if (displaySlides.length === 0 || loading) return;
 
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+    }
+
     timerRef.current = setInterval(() => {
       if (scrolling.current) return;
 
-      const nextIndex = currentIndex + 1;
+      let nextIndex = currentIndex + 1;
+
+      if (originalSlides.length <= 1) {
+        nextIndex = 0;
+      }
+
       flatListRef.current?.scrollToIndex({index: nextIndex, animated: true});
       setCurrentIndex(nextIndex);
     }, AUTO_SLIDE_INTERVAL);
@@ -89,13 +110,13 @@ const Banner: FC = () => {
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
     };
-  }, [currentIndex]);
+  }, [currentIndex, displaySlides, loading, originalSlides.length]);
 
   const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
     if (scrolling.current) return;
 
     const offsetX = event.nativeEvent.contentOffset.x;
-    const index = Math.round(offsetX / SLIDE_WIDTH);
+    const index = Math.floor(offsetX / SLIDE_WIDTH + 0.5);
 
     if (index !== currentIndex) {
       setCurrentIndex(index);
@@ -104,38 +125,31 @@ const Banner: FC = () => {
 
   const handleScrollEnd = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
     const offsetX = event.nativeEvent.contentOffset.x;
-    const index = Math.round(offsetX / SLIDE_WIDTH);
+    const index = Math.floor(offsetX / SLIDE_WIDTH + 0.5);
 
-    if (index === 0) {
-      flatListRef.current?.scrollToIndex({
-        index: originalSlides.length,
-        animated: false,
-      });
-      setCurrentIndex(originalSlides.length);
-    } else if (index === displaySlides.length - 1) {
-      flatListRef.current?.scrollToIndex({
-        index: 1,
-        animated: false,
-      });
-      setCurrentIndex(1);
-    } else {
-      setCurrentIndex(index);
-    }
-
-    if (timerRef.current) {
-      clearInterval(timerRef.current);
-      timerRef.current = setInterval(() => {
-        const nextIndex = currentIndex + 1;
-        flatListRef.current?.scrollToIndex({index: nextIndex, animated: true});
-        setCurrentIndex(nextIndex);
-      }, AUTO_SLIDE_INTERVAL);
+    if (originalSlides.length > 1) {
+      if (index === 0) {
+        flatListRef.current?.scrollToIndex({
+          index: originalSlides.length,
+          animated: false,
+        });
+        setCurrentIndex(originalSlides.length);
+      } else if (index === displaySlides.length - 1) {
+        flatListRef.current?.scrollToIndex({
+          index: 1,
+          animated: false,
+        });
+        setCurrentIndex(1);
+      } else {
+        setCurrentIndex(index);
+      }
     }
 
     scrolling.current = false;
   };
 
   const getAdjustedIndicatorIndex = () => {
-    if (displaySlides.length === 0) return 0;
+    if (originalSlides.length <= 1) return 0;
 
     if (currentIndex === 0) {
       return originalSlides.length - 1;
@@ -173,7 +187,6 @@ const Banner: FC = () => {
           onMomentumScrollEnd={handleScrollEnd}
           onScrollBeginDrag={handleBeginDrag}
           scrollEventThrottle={16}
-          initialScrollIndex={0}
           contentContainerStyle={{
             alignItems: 'center',
           }}

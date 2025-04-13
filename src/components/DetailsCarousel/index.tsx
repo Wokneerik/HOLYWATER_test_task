@@ -2,6 +2,7 @@ import remoteConfig from '@react-native-firebase/remote-config';
 import React, {FC, useEffect, useRef, useState} from 'react';
 import {Animated, Dimensions, FlatList, Image, Text, View} from 'react-native';
 import {Book} from '../../types';
+import Summary from '../Summary';
 import styles from './styles';
 
 interface DetailsHeaderCarouselProps {
@@ -16,9 +17,7 @@ const TOTAL_ITEM_WIDTH = ITEM_WIDTH + ITEM_MARGIN * 2;
 // Calculate the offset to center an item
 const CENTER_OFFSET = (width - ITEM_WIDTH) / 2 - ITEM_MARGIN;
 
-const DetailsHeaderCarousel: FC<DetailsHeaderCarouselProps> = ({
-  initialBookId,
-}) => {
+const DetailsCarousel: FC<DetailsHeaderCarouselProps> = ({initialBookId}) => {
   const [carouselBooks, setCarouselBooks] = useState<Book[]>([]);
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const flatListRef = useRef<FlatList<Book>>(null);
@@ -75,7 +74,7 @@ const DetailsHeaderCarousel: FC<DetailsHeaderCarouselProps> = ({
     };
 
     fetchCarouselBooks();
-  }, []);
+  }, [initialBookId]);
 
   const handleScroll = (event: any) => {
     if (!isInitialScrollComplete) return;
@@ -127,42 +126,45 @@ const DetailsHeaderCarousel: FC<DetailsHeaderCarouselProps> = ({
   };
 
   return (
-    <View style={styles.container}>
-      {carouselBooks.length > 0 && (
-        <>
-          <Animated.FlatList
-            ref={flatListRef as any}
-            data={carouselBooks}
-            keyExtractor={item => item.id.toString()}
-            renderItem={renderItem}
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            decelerationRate="fast"
-            snapToInterval={TOTAL_ITEM_WIDTH}
-            snapToAlignment="start"
-            contentContainerStyle={{
-              paddingHorizontal: CENTER_OFFSET,
-            }}
-            onScroll={Animated.event(
-              [{nativeEvent: {contentOffset: {x: scrollX}}}],
-              {useNativeDriver: true, listener: event => {}},
-            )}
-            onMomentumScrollEnd={handleScroll}
-            getItemLayout={getItemLayout}
-            initialNumToRender={5}
-          />
-          <View style={styles.bookInfoContainer}>
-            <Text style={styles.bookTitle}>
-              {carouselBooks[currentIndex]?.name}
-            </Text>
-            <Text style={styles.bookAuthor}>
-              {carouselBooks[currentIndex]?.author}
-            </Text>
-          </View>
-        </>
-      )}
-    </View>
+    <>
+      <View style={styles.container}>
+        {carouselBooks.length > 0 && (
+          <>
+            <Animated.FlatList
+              ref={flatListRef as any}
+              data={carouselBooks}
+              keyExtractor={item => item.id.toString()}
+              renderItem={renderItem}
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              decelerationRate="fast"
+              snapToInterval={TOTAL_ITEM_WIDTH}
+              snapToAlignment="start"
+              contentContainerStyle={{
+                paddingHorizontal: CENTER_OFFSET,
+              }}
+              onScroll={Animated.event(
+                [{nativeEvent: {contentOffset: {x: scrollX}}}],
+                {useNativeDriver: true, listener: event => {}},
+              )}
+              onMomentumScrollEnd={handleScroll}
+              getItemLayout={getItemLayout}
+              initialNumToRender={5}
+            />
+            <View style={styles.bookInfoContainer}>
+              <Text style={styles.bookTitle}>
+                {carouselBooks[currentIndex]?.name}
+              </Text>
+              <Text style={styles.bookAuthor}>
+                {carouselBooks[currentIndex]?.author}
+              </Text>
+            </View>
+          </>
+        )}
+      </View>
+      <Summary carouselBooks={carouselBooks} currentIndex={currentIndex} />
+    </>
   );
 };
 
-export default DetailsHeaderCarousel;
+export default DetailsCarousel;
