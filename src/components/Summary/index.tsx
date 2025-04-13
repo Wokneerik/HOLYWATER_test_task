@@ -41,14 +41,14 @@ const Summary: FC<SummaryProps> = ({initialBookId}) => {
         const json = JSON.parse(jsonDataString);
 
         if (json && Array.isArray(json.books)) {
-          const foundBook = json.books.find(b => b.id === initialBookId);
+          const foundBook = json.books.find((b: any) => b.id === initialBookId);
           setBook(foundBook || null);
 
           // Fetch recommended books
           if (foundBook && Array.isArray(json.you_will_like_section)) {
             setLoadingRecommendations(true);
             const recommendedIds = json.you_will_like_section;
-            const relatedBooks = json.books.filter(b =>
+            const relatedBooks = json.books.filter((b: any) =>
               recommendedIds.includes(b.id),
             );
             setRecommendedBooks(relatedBooks);
