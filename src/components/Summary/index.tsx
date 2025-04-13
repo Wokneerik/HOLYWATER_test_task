@@ -75,7 +75,7 @@ const Summary: FC<SummaryProps> = ({carouselBooks, currentIndex}) => {
     };
 
     fetchRecommendedBooks();
-  }, []);
+  }, [carouselBooks]);
 
   return (
     <>
