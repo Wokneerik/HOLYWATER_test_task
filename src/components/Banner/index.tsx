@@ -1,4 +1,3 @@
-import remoteConfig from '@react-native-firebase/remote-config';
 import React, {FC, useEffect, useRef, useState} from 'react';
 import {
   ActivityIndicator,
@@ -9,66 +8,25 @@ import {
   Text,
   View,
 } from 'react-native';
+import useBannerSlides from '../../hooks/useBannerSlides';
 import {Slide} from '../../types';
 import BannerItem from '../BannerItem';
 import RenderIndicator from '../RenderIndicator';
 
 const {width} = Dimensions.get('window');
 const SLIDE_WIDTH = width;
-
 const AUTO_SLIDE_INTERVAL = 3000;
 
 const Banner: FC = () => {
-  const [originalSlides, setOriginalSlides] = useState<Slide[]>([]);
-  const [displaySlides, setDisplaySlides] = useState<Slide[]>([]);
+  const {originalSlides, displaySlides, loading, error} = useBannerSlides({
+    remoteConfigKey: 'json_data',
+  });
+
   const [currentIndex, setCurrentIndex] = useState<number>(1);
-  const [loading, setLoading] = useState(true);
   const flatListRef = useRef<FlatList<Slide>>(null);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const scrolling = useRef(false);
   const isInitialRender = useRef(true);
-
-  useEffect(() => {
-    const fetchBannerSlides = async () => {
-      try {
-        await remoteConfig().setDefaults({
-          json_data: JSON.stringify({top_banner_slides: []}),
-        });
-
-        await remoteConfig().setConfigSettings({
-          minimumFetchIntervalMillis: 0,
-        });
-
-        await remoteConfig().fetchAndActivate();
-        const jsonDataString = remoteConfig().getValue('json_data').asString();
-        const json = JSON.parse(jsonDataString);
-
-        if (json && json.top_banner_slides) {
-          const slides = json.top_banner_slides;
-          setOriginalSlides(slides);
-
-          if (slides.length > 0) {
-            if (slides.length === 1) {
-              setDisplaySlides(slides);
-            } else {
-              const modifiedSlides = [
-                slides[slides.length - 1],
-                ...slides,
-                slides[0],
-              ];
-              setDisplaySlides(modifiedSlides);
-            }
-          }
-        }
-      } catch (error) {
-        console.error('Error loading remote config:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchBannerSlides();
-  }, []);
 
   useEffect(() => {
     if (
@@ -171,6 +129,10 @@ const Banner: FC = () => {
     <View style={{position: 'relative'}}>
       {loading ? (
         <ActivityIndicator size="large" />
+      ) : error ? (
+        <Text style={{padding: 20, color: 'red'}}>
+          Error loading banner: {error.message}
+        </Text>
       ) : displaySlides && displaySlides.length > 0 ? (
         <FlatList
           ref={flatListRef}
@@ -199,10 +161,12 @@ const Banner: FC = () => {
       ) : (
         <Text style={{padding: 20, color: 'white'}}>No slides available</Text>
       )}
-      <RenderIndicator
-        slides={originalSlides}
-        currentIndex={getAdjustedIndicatorIndex()}
-      />
+      {displaySlides.length > 0 && (
+        <RenderIndicator
+          slides={originalSlides}
+          currentIndex={getAdjustedIndicatorIndex()}
+        />
+      )}
     </View>
   );
 };

@@ -1,6 +1,6 @@
-import remoteConfig from '@react-native-firebase/remote-config';
 import React, {FC, useEffect, useRef, useState} from 'react';
 import {Animated, Dimensions, FlatList, Image, Text, View} from 'react-native';
+import useDetailsCarouselData from '../../hooks/useDetailsCarouselData';
 import {Book} from '../../types';
 import Summary from '../Summary';
 import styles from './styles';
@@ -13,75 +13,37 @@ const {width} = Dimensions.get('window');
 const ITEM_WIDTH = 200;
 const ITEM_MARGIN = 10;
 const TOTAL_ITEM_WIDTH = ITEM_WIDTH + ITEM_MARGIN * 2;
-
-// Calculate the offset to center an item
 const CENTER_OFFSET = (width - ITEM_WIDTH) / 2 - ITEM_MARGIN;
 
 const DetailsCarousel: FC<DetailsHeaderCarouselProps> = ({initialBookId}) => {
-  const [carouselBooks, setCarouselBooks] = useState<Book[]>([]);
-  const [currentIndex, setCurrentIndex] = useState<number>(0);
+  const {carouselBooks, loading, error, initialIndex} = useDetailsCarouselData({
+    remoteConfigKey: 'details_carousel',
+    initialBookId,
+  });
+
+  const [currentIndex, setCurrentIndex] = useState<number>(initialIndex);
   const flatListRef = useRef<FlatList<Book>>(null);
   const [isInitialScrollComplete, setIsInitialScrollComplete] = useState(false);
-  const scrollX = useRef(new Animated.Value(0)).current;
+  const scrollX = useRef(
+    new Animated.Value(initialIndex * TOTAL_ITEM_WIDTH),
+  ).current;
 
   useEffect(() => {
-    const fetchCarouselBooks = async () => {
-      try {
-        await remoteConfig().setDefaults({
-          details_carousel: JSON.stringify({books: []}),
-        });
-        await remoteConfig().setConfigSettings({
-          minimumFetchIntervalMillis: 0,
-        });
-        await remoteConfig().fetchAndActivate();
-        const jsonDataString = remoteConfig()
-          .getValue('details_carousel')
-          .asString();
-        const json = JSON.parse(jsonDataString);
-
-        if (json && Array.isArray(json.books)) {
-          setCarouselBooks(json.books);
-
-          if (initialBookId) {
-            const initialIndex = json.books.findIndex(
-              (book: Book) => book.id === initialBookId,
-            );
-            if (initialIndex !== -1) {
-              setCurrentIndex(initialIndex);
-
-              // Delay for scrolling
-              setTimeout(() => {
-                if (flatListRef.current) {
-                  const offset = initialIndex * TOTAL_ITEM_WIDTH;
-                  flatListRef.current.scrollToOffset({
-                    offset,
-                    animated: false,
-                  });
-                  scrollX.setValue(offset);
-                  setIsInitialScrollComplete(true);
-                }
-              }, 200);
-            }
-          }
-        } else {
-          console.warn(
-            'details_carousel in Remote Config does not contain a valid "books" array.',
-          );
-        }
-      } catch (error) {
-        console.error('Error fetching details carousel:', error);
-      }
-    };
-
-    fetchCarouselBooks();
-  }, [initialBookId]);
+    if (carouselBooks.length > 0 && flatListRef.current) {
+      const initialOffset = initialIndex * TOTAL_ITEM_WIDTH;
+      flatListRef.current.scrollToOffset({
+        offset: initialOffset,
+        animated: false,
+      });
+      scrollX.setValue(initialOffset);
+      setIsInitialScrollComplete(true);
+    }
+  }, [carouselBooks, initialIndex]);
 
   const handleScroll = (event: any) => {
     if (!isInitialScrollComplete) return;
-
     const scrollPosition = event.nativeEvent.contentOffset.x;
     const index = Math.round(scrollPosition / TOTAL_ITEM_WIDTH);
-
     if (index >= 0 && index < carouselBooks.length && index !== currentIndex) {
       setCurrentIndex(index);
     }
@@ -99,19 +61,16 @@ const DetailsCarousel: FC<DetailsHeaderCarouselProps> = ({initialBookId}) => {
       index * TOTAL_ITEM_WIDTH,
       (index + 1) * TOTAL_ITEM_WIDTH,
     ];
-
     const scale = scrollX.interpolate({
       inputRange,
       outputRange: [0.85, 1, 0.85],
       extrapolate: 'clamp',
     });
-
     const opacity = scrollX.interpolate({
       inputRange,
       outputRange: [0.6, 1, 0.6],
       extrapolate: 'clamp',
     });
-
     return (
       <View style={styles.carouselItem}>
         <Animated.View
@@ -124,6 +83,20 @@ const DetailsCarousel: FC<DetailsHeaderCarouselProps> = ({initialBookId}) => {
       </View>
     );
   };
+
+  if (loading) {
+    return (
+      <Text style={{padding: 20, color: 'white'}}>Loading carousel...</Text>
+    );
+  }
+
+  if (error) {
+    return (
+      <Text style={{padding: 20, color: 'red'}}>
+        Error loading carousel: {error.message}
+      </Text>
+    );
+  }
 
   return (
     <>
@@ -150,6 +123,7 @@ const DetailsCarousel: FC<DetailsHeaderCarouselProps> = ({initialBookId}) => {
               onMomentumScrollEnd={handleScroll}
               getItemLayout={getItemLayout}
               initialNumToRender={5}
+              initialScrollIndex={initialIndex}
             />
             <View style={styles.bookInfoContainer}>
               <Text style={styles.bookTitle}>
