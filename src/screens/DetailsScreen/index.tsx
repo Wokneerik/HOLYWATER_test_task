@@ -1,6 +1,6 @@
 import React, {FC} from 'react';
-import {ImageBackground} from 'react-native';
-import {SafeAreaView} from 'react-native-safe-area-context';
+import {ImageBackground, SafeAreaView} from 'react-native';
+
 import BackButton from '../../components/BackButton';
 
 import DetailsCarousel from '../../components/DetailsCarousel';
@@ -14,7 +14,7 @@ const DetailsScreen: FC<DetailsScreenProps> = ({route}) => {
     <ImageBackground
       source={require('../../assets/Group669.png')}
       style={styles.backgroundImage}>
-      <SafeAreaView>
+      <SafeAreaView style={styles.AndroidSafeArea}>
         <BackButton />
         <DetailsCarousel initialBookId={bookId} />
       </SafeAreaView>

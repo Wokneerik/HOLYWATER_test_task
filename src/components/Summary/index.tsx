@@ -154,7 +154,7 @@ const Summary: FC<SummaryProps> = ({carouselBooks, currentIndex}) => {
           <TouchableOpacity style={styles.readNowButton}>
             <Text style={styles.readNowText}>Read Now</Text>
           </TouchableOpacity>
-          <View style={{height: 370}} />
+          <View style={{height: 400}} />
         </ScrollView>
       ) : (
         <Text style={{padding: 20, color: 'white'}}>No slides available</Text>
