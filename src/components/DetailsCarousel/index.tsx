@@ -93,7 +93,7 @@ const DetailsCarousel: FC<DetailsHeaderCarouselProps> = ({initialBookId}) => {
     index,
   });
 
-  const renderItem = ({item, index}: {item: Book; index: number}) => {
+  const carouselBookItem = ({item, index}: {item: Book; index: number}) => {
     const inputRange = [
       (index - 1) * TOTAL_ITEM_WIDTH,
       index * TOTAL_ITEM_WIDTH,
@@ -134,7 +134,7 @@ const DetailsCarousel: FC<DetailsHeaderCarouselProps> = ({initialBookId}) => {
               ref={flatListRef as any}
               data={carouselBooks}
               keyExtractor={item => item.id.toString()}
-              renderItem={renderItem}
+              renderItem={carouselBookItem}
               horizontal
               showsHorizontalScrollIndicator={false}
               decelerationRate="fast"

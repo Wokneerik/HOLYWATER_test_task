@@ -1,79 +1,42 @@
-import remoteConfig from '@react-native-firebase/remote-config';
-import React, {FC, useEffect, useState} from 'react';
-import {FlatList, ScrollView, Text, View} from 'react-native';
-import {Book} from '../../types';
+import React, {FC} from 'react';
+import {
+  ActivityIndicator,
+  FlatList,
+  ScrollView,
+  Text,
+  View,
+} from 'react-native';
+import useGroupedRemoteConfigData from '../../hooks/useGroupedRemoteConfigData';
 import BookItem from '../BookItem';
 import styles from './styles';
 
-interface GenreGroup {
-  genre: string;
-  books: Book[];
-}
-
 const HomeCategory: FC = () => {
-  const [groupedBooks, setGroupedBooks] = useState<GenreGroup[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchBooks = async () => {
-      try {
-        await remoteConfig().setDefaults({
-          json_data: JSON.stringify({books: []}),
-        });
-
-        await remoteConfig().setConfigSettings({
-          minimumFetchIntervalMillis: 0,
-        });
-
-        await remoteConfig().fetchAndActivate();
-        const jsonDataString = remoteConfig().getValue('json_data').asString();
-        const json = JSON.parse(jsonDataString);
-
-        if (json && json.books) {
-          const books: Book[] = json.books;
-          const grouped: {[key: string]: Book[]} = {};
-          books.forEach(book => {
-            if (grouped[book.genre]) {
-              grouped[book.genre].push(book);
-            } else {
-              grouped[book.genre] = [book];
-            }
-          });
-
-          const groupedArray: GenreGroup[] = Object.keys(grouped).map(
-            genre => ({
-              genre,
-              books: grouped[genre],
-            }),
-          );
-          setGroupedBooks(groupedArray);
-        }
-      } catch (error) {
-        console.error('Error loading remote config:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchBooks();
-  }, []);
+  const {groupedBooks, loading} = useGroupedRemoteConfigData({
+    remoteConfigKey: 'json_data',
+  });
 
   return (
-    <ScrollView style={styles.container}>
-      {groupedBooks.map((genreGroup, index) => (
-        <View key={index} style={styles.genreContainer}>
-          <Text style={styles.genreTitle}>{genreGroup.genre}</Text>
-          <FlatList
-            data={genreGroup.books}
-            keyExtractor={book => book.id.toString()}
-            renderItem={({item}) => <BookItem book={item} />}
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.booksRow}
-          />
-        </View>
-      ))}
-    </ScrollView>
+    <>
+      {loading ? (
+        <ActivityIndicator size="large" />
+      ) : (
+        <ScrollView style={styles.container}>
+          {groupedBooks.map((genreGroup, index) => (
+            <View key={index} style={styles.genreContainer}>
+              <Text style={styles.genreTitle}>{genreGroup.genre}</Text>
+              <FlatList
+                data={genreGroup.books}
+                keyExtractor={book => book.id.toString()}
+                renderItem={({item}) => <BookItem book={item} />}
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={styles.booksRow}
+              />
+            </View>
+          ))}
+        </ScrollView>
+      )}
+    </>
   );
 };
 
