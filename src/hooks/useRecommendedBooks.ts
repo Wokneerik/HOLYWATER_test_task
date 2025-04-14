@@ -11,12 +11,12 @@ function useRecommendedBooks({remoteConfigKey}: UseRecommendedBooksProps) {
   const [loadingRecommendations, setLoadingRecommendations] = useState(true);
   const [errorRecommendations, setErrorRecommendations] =
     useState<Error | null>(null);
-  const hasFetched = useRef(false); // Track if fetched
+  const hasFetched = useRef(false);
 
   useEffect(() => {
     const fetchRecommendedBooks = async () => {
       if (hasFetched.current) {
-        return; // Don't fetch again
+        return;
       }
 
       setLoadingRecommendations(true);
@@ -44,11 +44,11 @@ function useRecommendedBooks({remoteConfigKey}: UseRecommendedBooksProps) {
           Array.isArray(json.you_will_like_section)
         ) {
           const recommendedIds = json.you_will_like_section;
-          const relatedBooks = json.books.filter((b: any) =>
+          const relatedBooks = json.books.filter((b: Book) =>
             recommendedIds.includes(b.id),
           );
           setRecommendedBooks(relatedBooks);
-          hasFetched.current = true; // Mark as fetched
+          hasFetched.current = true;
         } else {
           setRecommendedBooks([]);
           setErrorRecommendations(
